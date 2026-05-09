@@ -1,0 +1,38 @@
+namespace PixelAcademy.Domain.Enums;
+
+public enum AuditActionType
+{
+    Login,
+    Logout,
+    Register,
+    UpdateProfile,
+    CreateCourse,
+    UpdateCourse,
+    DeleteCourse,
+    CreateLecture,
+    UpdateLecture,
+    DeleteLecture,
+    CreateExam,
+    UpdateExam,
+    DeleteExam,
+    SubmitExam,
+    CreateAssignment,
+    SubmitAssignment,
+    GradeAssignment,
+    Enroll,
+    RedeemCode,
+    GenerateCode,
+    DisableCode,
+    WalletRecharge,
+    WalletPurchase,
+    BanUser,
+    UnbanUser,
+    DisableCourse,
+    EnableCourse,
+    DisableLecture,
+    EnableLecture,
+    PublishAnnouncement,
+    ModerationAction,
+    AdminAction,
+    SystemAction
+}

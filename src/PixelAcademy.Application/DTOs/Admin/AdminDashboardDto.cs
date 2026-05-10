@@ -81,7 +81,7 @@ public class ActiveStudentDto
 {
     public Guid StudentId { get; set; }
     public string StudentName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
     public int WatchTimeSeconds { get; set; }
     public int CompletedLectures { get; set; }
     public int ExamAttempts { get; set; }

@@ -25,9 +25,9 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, PagedRe
         var query = users.AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Search))
-            query = query.Where(u => u.Email.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+            query = query.Where(u => u.PhoneNumber.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                 || u.Username.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                || u.FirstName.Contains(request.Search, StringComparison.OrdinalIgnoreCase));
+                || u.FullName.Contains(request.Search, StringComparison.OrdinalIgnoreCase));
 
         if (!string.IsNullOrEmpty(request.Role) && Enum.TryParse<UserRole>(request.Role, true, out var role))
             query = query.Where(u => u.Role == role);

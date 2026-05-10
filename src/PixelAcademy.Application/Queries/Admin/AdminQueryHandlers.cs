@@ -117,8 +117,8 @@ public class GetAdminDashboardQueryHandler : IRequestHandler<GetAdminDashboardQu
             return new ActiveStudentDto
             {
                 StudentId = sa.StudentId,
-                StudentName = student != null ? $"{student.FirstName} {student.LastName}" : "Unknown",
-                Email = student?.Email ?? "",
+                StudentName = student != null ? student.FullName : "Unknown",
+                PhoneNumber = student?.PhoneNumber ?? "",
                 WatchTimeSeconds = sa.WatchTime,
                 CompletedLectures = watchSessions.Count(ws => ws.StudentId == sa.StudentId && ws.IsCompleted),
                 ExamAttempts = examAttempts.Count(a => a.StudentId == sa.StudentId),
@@ -133,7 +133,7 @@ public class GetAdminDashboardQueryHandler : IRequestHandler<GetAdminDashboardQu
             {
                 CourseId = c.Id,
                 CourseTitle = c.Title,
-                InstructorName = c.Instructor != null ? $"{c.Instructor.FirstName} {c.Instructor.LastName}" : "Unknown",
+                InstructorName = c.Instructor != null ? c.Instructor.FullName : "Unknown",
                 EnrollmentCount = enrollments.Count(e => e.CourseId == c.Id),
                 TotalWatchTimeSeconds = watchSessions.Where(ws => ws.CourseId == c.Id).Sum(ws => ws.DurationWatchedSeconds),
                 LectureCount = lectures.Count(l => l.CourseId == c.Id),
@@ -151,7 +151,7 @@ public class GetAdminDashboardQueryHandler : IRequestHandler<GetAdminDashboardQu
             {
                 ActivityType = l.Action.ToString(),
                 Description = l.Details ?? $"{l.Action} on {l.EntityType}",
-                UserName = l.User != null ? $"{l.User.FirstName} {l.User.LastName}" : "System",
+                UserName = l.User != null ? l.User.FullName : "System",
                 Timestamp = l.CreatedAt
             })
             .ToList();

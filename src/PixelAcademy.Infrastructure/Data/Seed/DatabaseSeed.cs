@@ -13,11 +13,16 @@ public static class DatabaseSeed
             var admin = new User
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                Email = "admin@pixelacademy.com",
+                PhoneNumber = "01000000001",
                 Username = "admin",
                 PasswordHash = passwordHasher.HashPassword("Admin123!"),
+                FullName = "System Administrator",
                 FirstName = "System",
                 LastName = "Administrator",
+                ParentPhoneNumber = "01000000001",
+                Governorate = "Cairo",
+                Address = "Admin Office",
+                SchoolName = "PixelAcademy",
                 Role = UserRole.Admin,
                 IsActive = true,
                 CreatedAt = dateTimeProvider.UtcNow
@@ -26,11 +31,16 @@ public static class DatabaseSeed
             var instructor = new User
             {
                 Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                Email = "instructor@pixelacademy.com",
+                PhoneNumber = "01000000002",
                 Username = "instructor",
                 PasswordHash = passwordHasher.HashPassword("Instructor123!"),
+                FullName = "John Doe",
                 FirstName = "John",
                 LastName = "Doe",
+                ParentPhoneNumber = "01000000002",
+                Governorate = "Alexandria",
+                Address = "Instructor Building",
+                SchoolName = "PixelAcademy",
                 Role = UserRole.Instructor,
                 IsActive = true,
                 CreatedAt = dateTimeProvider.UtcNow
@@ -39,11 +49,16 @@ public static class DatabaseSeed
             var student = new User
             {
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                Email = "student@pixelacademy.com",
+                PhoneNumber = "01000000003",
                 Username = "student",
                 PasswordHash = passwordHasher.HashPassword("Student123!"),
+                FullName = "Jane Smith",
                 FirstName = "Jane",
                 LastName = "Smith",
+                ParentPhoneNumber = "01000000004",
+                Governorate = "Giza",
+                Address = "Student Dorm",
+                SchoolName = "PixelAcademy High",
                 Role = UserRole.Student,
                 IsActive = true,
                 CreatedAt = dateTimeProvider.UtcNow
@@ -66,7 +81,7 @@ public static class DatabaseSeed
                 InstructorId = instructor.Id,
                 DurationMinutes = 360,
                 CreatedAt = dateTimeProvider.UtcNow,
-                CreatedBy = instructor.Email
+                CreatedBy = instructor.PhoneNumber
             };
 
             var course2 = new Course
@@ -83,7 +98,7 @@ public static class DatabaseSeed
                 InstructorId = instructor.Id,
                 DurationMinutes = 480,
                 CreatedAt = dateTimeProvider.UtcNow,
-                CreatedBy = instructor.Email
+                CreatedBy = instructor.PhoneNumber
             };
 
             await context.Courses.AddRangeAsync(course, course2);

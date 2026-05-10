@@ -2,10 +2,10 @@ using PixelAcademy.Domain.Entities;
 
 namespace PixelAcademy.Domain.Specifications;
 
-public class UserByEmailSpec : BaseSpecification<User>
+public class UserByPhoneNumberSpec : BaseSpecification<User>
 {
-    public UserByEmailSpec(string email)
+    public UserByPhoneNumberSpec(string phoneNumber)
     {
-        Criteria = u => u.Email == email;
+        Criteria = u => u.PhoneNumber == phoneNumber;
     }
 }

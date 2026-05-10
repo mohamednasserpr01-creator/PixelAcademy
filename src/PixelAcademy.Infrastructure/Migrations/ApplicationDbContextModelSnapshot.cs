@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PixelAcademy.Infrastructure.Data;
 
 #nullable disable
 
-namespace PixelAcademy.Infrastructure.Data.Migrations
+namespace PixelAcademy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260509015008_InitialCreate")]
-    partial class InitialCreate
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -521,6 +518,48 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("PixelAcademy.Domain.Entities.EducationStream", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EducationalStageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationalStageId");
+
+                    b.ToTable("EducationStreams");
+                });
+
+            modelBuilder.Entity("PixelAcademy.Domain.Entities.EducationalStage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EducationalStages");
                 });
 
             modelBuilder.Entity("PixelAcademy.Domain.Entities.Enrollment", b =>
@@ -1254,6 +1293,11 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<string>("AvatarUrl")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -1281,12 +1325,22 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<Guid?>("EducationStreamId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("EducationalStageId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Governorate")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -1304,14 +1358,23 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ParentPhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
@@ -1323,6 +1386,11 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1343,7 +1411,11 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("EducationStreamId");
+
+                    b.HasIndex("EducationalStageId");
+
+                    b.HasIndex("PhoneNumber")
                         .IsUnique();
 
                     b.HasIndex("Username")
@@ -1657,6 +1729,17 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                     b.Navigation("Instructor");
                 });
 
+            modelBuilder.Entity("PixelAcademy.Domain.Entities.EducationStream", b =>
+                {
+                    b.HasOne("PixelAcademy.Domain.Entities.EducationalStage", "EducationalStage")
+                        .WithMany("EducationStreams")
+                        .HasForeignKey("EducationalStageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EducationalStage");
+                });
+
             modelBuilder.Entity("PixelAcademy.Domain.Entities.Enrollment", b =>
                 {
                     b.HasOne("PixelAcademy.Domain.Entities.ActivationCode", "ActivationCode")
@@ -1902,6 +1985,23 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PixelAcademy.Domain.Entities.User", b =>
+                {
+                    b.HasOne("PixelAcademy.Domain.Entities.EducationStream", "EducationStream")
+                        .WithMany()
+                        .HasForeignKey("EducationStreamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PixelAcademy.Domain.Entities.EducationalStage", "EducationalStage")
+                        .WithMany()
+                        .HasForeignKey("EducationalStageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EducationStream");
+
+                    b.Navigation("EducationalStage");
+                });
+
             modelBuilder.Entity("PixelAcademy.Domain.Entities.VideoProgress", b =>
                 {
                     b.HasOne("PixelAcademy.Domain.Entities.Lecture", "Lecture")
@@ -1989,6 +2089,11 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                     b.Navigation("Lectures");
 
                     b.Navigation("MediaAssets");
+                });
+
+            modelBuilder.Entity("PixelAcademy.Domain.Entities.EducationalStage", b =>
+                {
+                    b.Navigation("EducationStreams");
                 });
 
             modelBuilder.Entity("PixelAcademy.Domain.Entities.Exam", b =>

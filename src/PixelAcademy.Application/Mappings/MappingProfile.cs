@@ -22,11 +22,15 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<User, UserDto>();
-        CreateMap<User, UserProfileDto>();
+        CreateMap<User, UserDto>()
+            .ForMember(dest => dest.EducationalStageName, opt => opt.MapFrom(src => src.EducationalStage != null ? src.EducationalStage.Name : null))
+            .ForMember(dest => dest.EducationStreamName, opt => opt.MapFrom(src => src.EducationStream != null ? src.EducationStream.Name : null));
+        CreateMap<User, UserProfileDto>()
+            .ForMember(dest => dest.EducationalStageName, opt => opt.MapFrom(src => src.EducationalStage != null ? src.EducationalStage.Name : null))
+            .ForMember(dest => dest.EducationStreamName, opt => opt.MapFrom(src => src.EducationStream != null ? src.EducationStream.Name : null));
 
         CreateMap<Course, CourseDto>()
-            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => $"{src.Instructor.FirstName} {src.Instructor.LastName}"))
+            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor != null ? src.Instructor.FullName : null))
             .ForMember(dest => dest.LectureCount, opt => opt.MapFrom(src => src.Lectures.Count))
             .ForMember(dest => dest.EnrollmentCount, opt => opt.MapFrom(src => src.Enrollments.Count));
 
@@ -35,7 +39,7 @@ public class MappingProfile : Profile
         CreateMap<Lecture, LectureDto>();
 
         CreateMap<Enrollment, EnrollmentDto>()
-            .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => $"{src.Student.FirstName} {src.Student.LastName}"))
+            .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Student != null ? src.Student.FullName : null))
             .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course.Title))
             .ForMember(dest => dest.EnrolledAt, opt => opt.MapFrom(src => src.CreatedAt));
 
@@ -48,7 +52,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.MediaAssetUrl, opt => opt.MapFrom(src => src.MediaAsset != null ? src.MediaAsset.Url : null));
 
         CreateMap<ActivationCode, ActivationCodeDto>()
-            .ForMember(dest => dest.GeneratedByName, opt => opt.MapFrom(src => $"{src.GeneratedBy.FirstName} {src.GeneratedBy.LastName}"))
+            .ForMember(dest => dest.GeneratedByName, opt => opt.MapFrom(src => src.GeneratedBy != null ? src.GeneratedBy.FullName : null))
             .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course != null ? src.Course.Title : null))
             .ForMember(dest => dest.LectureTitle, opt => opt.MapFrom(src => src.Lecture != null ? src.Lecture.Title : null))
             .ForMember(dest => dest.IsFullyRedeemed, opt => opt.MapFrom(src => src.IsFullyRedeemed))
@@ -103,7 +107,7 @@ public class MappingProfile : Profile
 
         CreateMap<AssignmentSubmission, AssignmentSubmissionDto>()
             .ForMember(dest => dest.AssignmentTitle, opt => opt.MapFrom(src => src.Assignment != null ? src.Assignment.Title : null))
-            .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Student != null ? $"{src.Student.FirstName} {src.Student.LastName}" : null))
+            .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Student != null ? src.Student.FullName : null))
             .ForMember(dest => dest.MaxPoints, opt => opt.MapFrom(src => src.Assignment != null ? src.Assignment.MaxPoints : 0));
 
         // Notification mappings
@@ -112,10 +116,10 @@ public class MappingProfile : Profile
         // Announcement mappings
         CreateMap<Announcement, DTOs.Announcements.AnnouncementDto>()
             .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course != null ? src.Course.Title : null))
-            .ForMember(dest => dest.CreatedByName, opt => opt.MapFrom(src => src.Creator != null ? $"{src.Creator.FirstName} {src.Creator.LastName}" : null));
+            .ForMember(dest => dest.CreatedByName, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.FullName : null));
 
         // AuditLog mappings
         CreateMap<AuditLog, DTOs.AuditLogs.AuditLogDto>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? $"{src.User.FirstName} {src.User.LastName}" : null));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : null));
     }
 }

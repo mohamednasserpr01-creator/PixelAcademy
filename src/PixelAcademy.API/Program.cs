@@ -106,37 +106,31 @@ builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfile).Assembl
 
 var app = builder.Build();
 
-// قمنا بإزالة شرط بيئة التطوير لكي يظهر Swagger بشكل دائم
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
-    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-    foreach (var description in provider.ApiVersionDescriptions)
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-    }
-});
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+        }
+    });
+}
 
-// الترتيب المثالي للـ Middleware لضمان الأمان والأداء
+app.UseRateLimiter();
+app.UseSerilogRequestLogging();
 app.UseCustomMiddleware();
-
 if (!app.Environment.IsEnvironment("Docker"))
 {
     app.UseHttpsRedirection();
 }
-
-app.UseRouting(); // إضافة التوجيه قبل الـ CORS والـ Rate Limiter
-
 app.UseCors("Frontend");
-
-app.UseRateLimiter(); // يجب أن يكون بعد التوجيه ليعرف المسار المطلوب
-app.UseSerilogRequestLogging();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-// تطبيق الـ Rate Limiting العام على كل الـ Controllers
-app.MapControllers().RequireRateLimiting("general");
+app.MapControllers();
 
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
@@ -181,10 +175,10 @@ await using (var scope = app.Services.CreateAsyncScope())
         await dbContext.Database.EnsureCreatedAsync();
     }
     else
-{
-    // await dbContext.Database.MigrateAsync();
-    // await DatabaseSeed.SeedAsync(dbContext, passwordHasher, dateTimeProvider);
-}
+    {
+        await dbContext.Database.MigrateAsync();
+        await DatabaseSeed.SeedAsync(dbContext, passwordHasher, dateTimeProvider);
+    }
 }
 
 app.Run();

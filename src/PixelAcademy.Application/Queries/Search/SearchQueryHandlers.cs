@@ -30,7 +30,7 @@ public class SearchQueryHandler : IRequestHandler<SearchQuery, SearchResultDto>
                 Description = c.Description,
                 Category = c.Category,
                 Level = c.Level,
-                InstructorName = c.Instructor != null ? $"{c.Instructor.FirstName} {c.Instructor.LastName}" : "",
+                InstructorName = c.Instructor != null ? c.Instructor.FullName : "",
                 EnrollmentCount = c.Enrollments.Count,
                 CreatedAt = c.CreatedAt
             })
@@ -76,12 +76,12 @@ public class SearchQueryHandler : IRequestHandler<SearchQuery, SearchResultDto>
         var users = await _unitOfWork.Users.GetAllAsync(cancellationToken);
         var filteredStudents = users
             .Where(u => !u.IsDeleted && u.Role == Domain.Enums.UserRole.Student)
-            .Where(u => string.IsNullOrEmpty(query) || u.FirstName.ToLower().Contains(query) || u.LastName.ToLower().Contains(query) || u.Email.ToLower().Contains(query) || u.Username.ToLower().Contains(query))
+            .Where(u => string.IsNullOrEmpty(query) || u.FullName.ToLower().Contains(query) || u.PhoneNumber.ToLower().Contains(query) || u.Username.ToLower().Contains(query))
             .Select(u => new StudentSearchResultDto
             {
                 Id = u.Id,
-                Name = $"{u.FirstName} {u.LastName}",
-                Email = u.Email,
+                Name = u.FullName,
+                PhoneNumber = u.PhoneNumber,
                 Username = u.Username,
                 EnrollmentCount = u.Enrollments.Count,
                 LastLoginAt = u.LastLoginAt,
@@ -131,7 +131,7 @@ public class SearchCoursesQueryHandler : IRequestHandler<SearchCoursesQuery, Pag
                         Description = c.Description,
                         Category = c.Category,
                         Level = c.Level,
-                        InstructorName = c.Instructor != null ? $"{c.Instructor.FirstName} {c.Instructor.LastName}" : "",
+                        InstructorName = c.Instructor != null ? c.Instructor.FullName : "",
                         EnrollmentCount = c.Enrollments.Count,
                         CreatedAt = c.CreatedAt
                     }

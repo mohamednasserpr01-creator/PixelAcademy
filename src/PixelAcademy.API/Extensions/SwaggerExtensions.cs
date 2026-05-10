@@ -46,12 +46,16 @@ public static class SwaggerExtensions
                 Type = "object",
                 Example = new OpenApiObject
                 {
-                    ["firstName"] = new OpenApiString("John"),
-                    ["lastName"] = new OpenApiString("Doe"),
-                    ["email"] = new OpenApiString("john.doe@example.com"),
+                    ["phoneNumber"] = new OpenApiString("01012345678"),
                     ["username"] = new OpenApiString("johndoe"),
                     ["password"] = new OpenApiString("StrongPassword123!"),
-                    ["role"] = new OpenApiString("Student")
+                    ["fullName"] = new OpenApiString("John Ahmed Doe"),
+                    ["parentPhoneNumber"] = new OpenApiString("01098765432"),
+                    ["governorate"] = new OpenApiString("Cairo"),
+                    ["address"] = new OpenApiString("123 Nile Street, Zamalek"),
+                    ["schoolName"] = new OpenApiString("Cairo International School"),
+                    ["educationalStageId"] = new OpenApiString("00000000-0000-0000-0000-000000000001"),
+                    ["educationStreamId"] = new OpenApiString("00000000-0000-0000-0000-000000000010")
                 }
             });
 
@@ -60,7 +64,7 @@ public static class SwaggerExtensions
                 Type = "object",
                 Example = new OpenApiObject
                 {
-                    ["email"] = new OpenApiString("student@pixelacademy.com"),
+                    ["phoneNumber"] = new OpenApiString("01012345678"),
                     ["password"] = new OpenApiString("Student123!")
                 }
             });

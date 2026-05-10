@@ -39,7 +39,7 @@ public class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand, C
             InstructorId = request.InstructorId,
             Status = Domain.Enums.CourseStatus.Draft,
             CreatedAt = _dateTimeProvider.UtcNow,
-            CreatedBy = instructor.Email
+            CreatedBy = instructor.PhoneNumber
         };
 
         await _unitOfWork.Courses.AddAsync(course, cancellationToken);

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PixelAcademy.Infrastructure.Data.Migrations
+namespace PixelAcademy.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -12,15 +12,54 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EducationalStages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationalStages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EducationStreams",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    EducationalStageId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationStreams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EducationStreams_EducationalStages_EducationalStageId",
+                        column: x => x.EducationalStageId,
+                        principalTable: "EducationalStages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     PasswordHash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FullName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ParentPhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Governorate = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    SchoolName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    EducationalStageId = table.Column<Guid>(type: "uuid", nullable: true),
+                    EducationStreamId = table.Column<Guid>(type: "uuid", nullable: true),
                     AvatarUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Bio = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     Role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -43,6 +82,18 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_EducationStreams_EducationStreamId",
+                        column: x => x.EducationStreamId,
+                        principalTable: "EducationStreams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Users_EducationalStages_EducationalStageId",
+                        column: x => x.EducationalStageId,
+                        principalTable: "EducationalStages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -1012,6 +1063,11 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                 column: "InstructorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EducationStreams_EducationalStageId",
+                table: "EducationStreams",
+                column: "EducationalStageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_ActivationCodeId",
                 table: "Enrollments",
                 column: "ActivationCodeId");
@@ -1175,9 +1231,19 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
+                name: "IX_Users_EducationalStageId",
                 table: "Users",
-                column: "Email",
+                column: "EducationalStageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_EducationStreamId",
+                table: "Users",
+                column: "EducationStreamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PhoneNumber",
+                table: "Users",
+                column: "PhoneNumber",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1307,6 +1373,12 @@ namespace PixelAcademy.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "EducationStreams");
+
+            migrationBuilder.DropTable(
+                name: "EducationalStages");
         }
     }
 }

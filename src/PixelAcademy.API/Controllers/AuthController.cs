@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
     {
         var result = await _mediator.Send(new LoginCommand
         {
-            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
             Password = request.Password
         });
         return Ok(result);
@@ -46,11 +46,15 @@ public class AuthController : ControllerBase
     {
         var result = await _mediator.Send(new RegisterCommand
         {
-            Email = request.Email,
-            Username = request.Username,
+            PhoneNumber = request.PhoneNumber,
             Password = request.Password,
-            FirstName = request.FirstName,
-            LastName = request.LastName
+            FullName = request.FullName,
+            ParentPhoneNumber = request.ParentPhoneNumber,
+            Governorate = request.Governorate,
+            Address = request.Address,
+            SchoolName = request.SchoolName,
+            EducationalStageId = request.EducationalStageId,
+            EducationStreamId = request.EducationStreamId
         });
         return CreatedAtAction(nameof(Me), new { }, result);
     }

@@ -39,7 +39,7 @@ public class CreateLectureCommandHandler : IRequestHandler<CreateLectureCommand,
             VideoUrl = request.VideoUrl,
             CourseId = request.CourseId,
             CreatedAt = _dateTimeProvider.UtcNow,
-            CreatedBy = instructor?.Email ?? "system"
+            CreatedBy = instructor?.PhoneNumber ?? "system"
         };
 
         await _unitOfWork.Lectures.AddAsync(lecture, cancellationToken);

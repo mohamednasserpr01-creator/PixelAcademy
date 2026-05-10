@@ -11,6 +11,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<EducationalStage> EducationalStages => Set<EducationalStage>();
+    public DbSet<EducationStream> EducationStreams => Set<EducationStream>();
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Lecture> Lectures => Set<Lecture>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();

@@ -28,7 +28,7 @@ public class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
 
         course.IsDeleted = true;
         course.DeletedAt = _dateTimeProvider.UtcNow;
-        course.DeletedBy = _currentUserService.Email ?? "system";
+        course.DeletedBy = _currentUserService.PhoneNumber ?? "system";
         await _unitOfWork.Courses.UpdateAsync(course, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

@@ -32,20 +32,22 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
 
     public async Task<AuthResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        if (!await _unitOfWork.Users.IsEmailUniqueAsync(request.Email, cancellationToken))
-            throw new ConflictException("Email is already registered.");
-
-        if (!await _unitOfWork.Users.IsUsernameUniqueAsync(request.Username, cancellationToken))
-            throw new ConflictException("Username is already taken.");
+        if (!await _unitOfWork.Users.IsPhoneNumberUniqueAsync(request.PhoneNumber, cancellationToken))
+            throw new ConflictException("Phone number is already registered.");
 
         var user = new User
         {
             Id = Guid.NewGuid(),
-            Email = request.Email,
-            Username = request.Username,
+            PhoneNumber = request.PhoneNumber,
+            Username = request.PhoneNumber, // حفظنا رقم التليفون كـ Username أوتوماتيك
             PasswordHash = _passwordHasher.HashPassword(request.Password),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
+            FullName = request.FullName,
+            ParentPhoneNumber = request.ParentPhoneNumber,
+            Governorate = request.Governorate,
+            Address = request.Address,
+            SchoolName = request.SchoolName,
+            EducationalStageId = request.EducationalStageId,
+            EducationStreamId = request.EducationStreamId,
             CreatedAt = _dateTimeProvider.UtcNow,
             IsActive = true
         };

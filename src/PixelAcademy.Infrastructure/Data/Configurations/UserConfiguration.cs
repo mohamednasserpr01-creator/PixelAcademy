@@ -10,18 +10,33 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(u => u.Id);
-        builder.HasIndex(u => u.Email).IsUnique();
+        builder.HasIndex(u => u.PhoneNumber).IsUnique();
         builder.HasIndex(u => u.Username).IsUnique();
-        builder.Property(u => u.Email).HasMaxLength(255).IsRequired();
+        builder.Property(u => u.PhoneNumber).HasMaxLength(20).IsRequired();
         builder.Property(u => u.Username).HasMaxLength(50).IsRequired();
         builder.Property(u => u.PasswordHash).HasMaxLength(500).IsRequired();
-        builder.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
-        builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
+        builder.Property(u => u.FullName).HasMaxLength(200).IsRequired();
+        builder.Property(u => u.FirstName).HasMaxLength(100);
+        builder.Property(u => u.LastName).HasMaxLength(100);
+        builder.Property(u => u.ParentPhoneNumber).HasMaxLength(20).IsRequired();
+        builder.Property(u => u.Governorate).HasMaxLength(100).IsRequired();
+        builder.Property(u => u.Address).HasMaxLength(500).IsRequired();
+        builder.Property(u => u.SchoolName).HasMaxLength(200).IsRequired();
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(50);
         builder.Property(u => u.AvatarUrl).HasMaxLength(500);
         builder.Property(u => u.Bio).HasMaxLength(2000);
         builder.Property(u => u.WalletBalance).HasPrecision(18, 2).HasDefaultValue(0);
         builder.HasQueryFilter(u => !u.IsDeleted);
+
+        builder.HasOne(u => u.EducationalStage)
+            .WithMany()
+            .HasForeignKey(u => u.EducationalStageId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(u => u.EducationStream)
+            .WithMany()
+            .HasForeignKey(u => u.EducationStreamId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(u => u.Enrollments).WithOne(e => e.Student).HasForeignKey(e => e.StudentId).OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(u => u.OwnedCourses).WithOne(c => c.Instructor).HasForeignKey(c => c.InstructorId).OnDelete(DeleteBehavior.Restrict);

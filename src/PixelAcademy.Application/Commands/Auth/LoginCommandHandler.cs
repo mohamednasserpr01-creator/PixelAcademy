@@ -32,9 +32,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.Users.GetByEmailAsync(request.Email, cancellationToken);
+        var user = await _unitOfWork.Users.GetByPhoneNumberAsync(request.PhoneNumber, cancellationToken);
         if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
-            throw new UnauthorizedException("Invalid email or password.");
+            throw new UnauthorizedException("Invalid phone number or password.");
 
         if (!user.IsActive)
             throw new UnauthorizedException("Account is deactivated.");

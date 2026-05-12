@@ -46,16 +46,15 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithVersioning();
 
+// 🚀 تعديل الـ CORS: خلينا البوليسي مفتوحة ومتسامحة تماماً عشان بيئة التطوير
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins(
-                builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-                ?? new[] { "http://localhost:3000", "http://localhost:5173", "http://localhost:4200" })
+        policy.SetIsOriginAllowed(origin => true) // 🚀 بيسمح لأي بورت (زي 3000) يكلمه
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowCredentials(); // بيسمح بمرور التوكن والكوكي
     });
 });
 
@@ -122,11 +121,13 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 app.UseRateLimiter();
 app.UseSerilogRequestLogging();
 app.UseCustomMiddleware();
+
 if (!app.Environment.IsEnvironment("Docker"))
 {
     app.UseHttpsRedirection();
 }
-app.UseCors("Frontend");
+
+app.UseCors("Frontend"); // 🚀 تفعيل البوليسي
 app.UseAuthentication();
 app.UseAuthorization();
 

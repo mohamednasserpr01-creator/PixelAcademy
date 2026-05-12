@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<EducationalStage> EducationalStages => Set<EducationalStage>();
     public DbSet<EducationStream> EducationStreams => Set<EducationStream>();
+    public DbSet<Subject> Subjects => Set<Subject>(); // 🚀 جدول المواد اللي كان ناقص
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Lecture> Lectures => Set<Lecture>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();

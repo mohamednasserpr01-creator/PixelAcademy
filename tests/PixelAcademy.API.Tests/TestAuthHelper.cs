@@ -5,11 +5,11 @@ namespace PixelAcademy.API.Tests;
 
 public static class TestAuthHelper
 {
-    public static async Task<AuthResponseDto> LoginAsync(HttpClient client, string email, string password)
+    public static async Task<AuthResponseDto> LoginAsync(HttpClient client, string phoneNumber, string password)
     {
         var request = new LoginRequestDto
         {
-            Email = email,
+            PhoneNumber = phoneNumber,
             Password = password
         };
 

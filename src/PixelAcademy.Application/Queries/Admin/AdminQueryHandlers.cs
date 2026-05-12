@@ -46,7 +46,7 @@ public class GetAdminDashboardQueryHandler : IRequestHandler<GetAdminDashboardQu
                 ActiveUsers = users.Count(u => u.IsActive && !u.IsBanned),
                 BannedUsers = users.Count(u => u.IsBanned),
                 Students = users.Count(u => u.Role == UserRole.Student),
-                Instructors = users.Count(u => u.Role == UserRole.Instructor),
+                Instructors = users.Count(u => u.Role == UserRole.Teacher), // 🚀 التعديل هنا: بقت Teacher
                 Admins = users.Count(u => u.Role == UserRole.Admin),
                 NewUsersToday = users.Count(u => u.CreatedAt.Date == today),
                 NewUsersThisWeek = users.Count(u => u.CreatedAt >= weekAgo)

@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using PixelAcademy.Domain.Interfaces;
 using PixelAcademy.Domain.Interfaces.Repositories;
 using PixelAcademy.Infrastructure.Data;
@@ -34,6 +37,11 @@ public class UnitOfWork : IUnitOfWork
     public IAnnouncementRepository Announcements { get; }
     public IAuditLogRepository AuditLogs { get; }
 
+    // 🚀 الجداول الجديدة اللي ضفناها
+    public IEducationalStageRepository EducationalStages { get; }
+    public IEducationStreamRepository EducationStreams { get; }
+    public ISubjectRepository Subjects { get; }
+
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
@@ -60,6 +68,11 @@ public class UnitOfWork : IUnitOfWork
         Notifications = new NotificationRepository(context);
         Announcements = new AnnouncementRepository(context);
         AuditLogs = new AuditLogRepository(context);
+
+        // 🚀 تعريف الجداول الجديدة جوه الـ Constructor
+        EducationalStages = new EducationalStageRepository(context);
+        EducationStreams = new EducationStreamRepository(context);
+        Subjects = new SubjectRepository(context);
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

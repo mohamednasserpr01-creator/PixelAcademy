@@ -27,15 +27,15 @@ public class AuthControllerTests : IDisposable
     [Fact]
     public async Task Register_User_Successfully()
     {
-        var email = $"register_test_{Guid.NewGuid():N}@pixelacademy.com";
+        // توليد رقم هاتف عشوائي للاختبار
+        var phoneNumber = $"010{new Random().Next(10000000, 99999999)}";
 
         var request = new RegisterRequestDto
         {
-            Email = email,
+            PhoneNumber = phoneNumber,
             Username = $"user_{Guid.NewGuid():N}",
             Password = "TestPassword123!",
-            FirstName = "Test",
-            LastName = "User"
+            FullName = "Test User"
         };
 
         var response = await _client.PostAsJsonAsync("/api/auth/register", request);
@@ -44,7 +44,7 @@ public class AuthControllerTests : IDisposable
         var result = await response.Content.ReadApiResponseAsync<AuthResponseDto>();
         Assert.NotNull(result);
         Assert.NotNull(result.User);
-        Assert.Equal(email, result.User.Email);
+        Assert.Equal(phoneNumber, result.User.PhoneNumber);
         Assert.False(string.IsNullOrEmpty(result.AccessToken));
         Assert.False(string.IsNullOrEmpty(result.RefreshToken));
     }
@@ -54,7 +54,7 @@ public class AuthControllerTests : IDisposable
     {
         var request = new LoginRequestDto
         {
-            Email = "student@pixelacademy.com",
+            PhoneNumber = "01011111111", // افترضنا إن ده رقم الطالب المسجل في الـ Seed
             Password = "Student123!"
         };
 
@@ -64,7 +64,7 @@ public class AuthControllerTests : IDisposable
         var result = await response.Content.ReadApiResponseAsync<AuthResponseDto>();
         Assert.NotNull(result);
         Assert.NotNull(result.User);
-        Assert.Equal("student@pixelacademy.com", result.User.Email);
+        Assert.Equal("01011111111", result.User.PhoneNumber);
         Assert.False(string.IsNullOrEmpty(result.AccessToken));
         Assert.False(string.IsNullOrEmpty(result.RefreshToken));
     }
@@ -74,7 +74,7 @@ public class AuthControllerTests : IDisposable
     {
         var loginRequest = new LoginRequestDto
         {
-            Email = "student@pixelacademy.com",
+            PhoneNumber = "01011111111",
             Password = "Student123!"
         };
 
@@ -89,7 +89,7 @@ public class AuthControllerTests : IDisposable
         Assert.Equal(HttpStatusCode.OK, meResponse.StatusCode);
         var meResult = await meResponse.Content.ReadApiResponseAsync<UserDto>();
         Assert.NotNull(meResult);
-        Assert.Equal("student@pixelacademy.com", meResult.Email);
+        Assert.Equal("01011111111", meResult.PhoneNumber);
         Assert.Equal("student", meResult.Username);
 
         _client.DefaultRequestHeaders.Authorization = null;
@@ -110,7 +110,7 @@ public class AuthControllerTests : IDisposable
     {
         var loginRequest = new LoginRequestDto
         {
-            Email = "student@pixelacademy.com",
+            PhoneNumber = "01011111111",
             Password = "Student123!"
         };
 
@@ -139,7 +139,7 @@ public class AuthControllerTests : IDisposable
     {
         var loginRequest = new LoginRequestDto
         {
-            Email = "student@pixelacademy.com",
+            PhoneNumber = "01011111111",
             Password = "Student123!"
         };
 
@@ -161,7 +161,7 @@ public class AuthControllerTests : IDisposable
     {
         var request = new LoginRequestDto
         {
-            Email = "student@pixelacademy.com",
+            PhoneNumber = "01011111111",
             Password = "WrongPassword123!"
         };
 
@@ -171,17 +171,16 @@ public class AuthControllerTests : IDisposable
     }
 
     [Fact]
-    public async Task Duplicate_Email_Fails()
+    public async Task Duplicate_PhoneNumber_Fails()
     {
-        var email = $"duplicate_{Guid.NewGuid():N}@pixelacademy.com";
+        var phoneNumber = $"010{new Random().Next(10000000, 99999999)}";
 
         var request = new RegisterRequestDto
         {
-            Email = email,
+            PhoneNumber = phoneNumber,
             Username = $"user_{Guid.NewGuid():N}",
             Password = "TestPassword123!",
-            FirstName = "Test",
-            LastName = "User"
+            FullName = "Test User"
         };
 
         var firstResponse = await _client.PostAsJsonAsync("/api/auth/register", request);

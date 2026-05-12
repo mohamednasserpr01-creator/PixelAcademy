@@ -30,5 +30,11 @@ public interface IUnitOfWork : IDisposable
     INotificationRepository Notifications { get; }
     IAnnouncementRepository Announcements { get; }
     IAuditLogRepository AuditLogs { get; }
+
+    // 🚀 الجداول الجديدة
+    IEducationalStageRepository EducationalStages { get; }
+    IEducationStreamRepository EducationStreams { get; }
+    ISubjectRepository Subjects { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

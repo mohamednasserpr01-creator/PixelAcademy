@@ -41,7 +41,7 @@ public static class DatabaseSeed
                 Governorate = "Alexandria",
                 Address = "Instructor Building",
                 SchoolName = "PixelAcademy",
-                Role = UserRole.Instructor,
+                Role = UserRole.Teacher, // 🚀 التعديل هنا: بقت Teacher
                 IsActive = true,
                 CreatedAt = dateTimeProvider.UtcNow
             };

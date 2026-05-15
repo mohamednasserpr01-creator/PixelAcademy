@@ -11,7 +11,7 @@ namespace PixelAcademy.API.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/courses/{courseId:guid}/[controller]")]
+[Route("api/[controller]")] 
 [Produces("application/json")]
 public class LecturesController : ControllerBase
 {
@@ -27,11 +27,11 @@ public class LecturesController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(List<LectureDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<LectureDto>>> GetByCourse(Guid courseId)
+    public async Task<ActionResult<List<LectureDto>>> GetAll([FromQuery] Guid? courseId)
     {
         var result = await _mediator.Send(new GetLecturesByCourseQuery
         {
-            CourseId = courseId,
+            CourseId = courseId, 
             StudentId = _currentUserService.IsAuthenticated ? _currentUserService.UserId : null
         });
         return Ok(result);
@@ -41,34 +41,36 @@ public class LecturesController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(LectureDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LectureDto>> GetById(Guid courseId, Guid id)
+    public async Task<ActionResult<LectureDto>> GetById(Guid id)
     {
         var result = await _mediator.Send(new GetLectureByIdQuery { Id = id });
         return Ok(result);
     }
 
     [HttpPost]
-    [Authorize(Roles = "Instructor,Admin")]
+    // 🚀 مسحنا الـ Roles خالص! أي حد معاه Token هيدخل
+    [Authorize] 
     [ProducesResponseType(typeof(LectureDto), StatusCodes.Status201Created)]
-    public async Task<ActionResult<LectureDto>> Create(Guid courseId, [FromBody] CreateLectureRequestDto request)
+    public async Task<ActionResult<LectureDto>> Create([FromBody] CreateLectureRequestDto request)
     {
         var result = await _mediator.Send(new CreateLectureCommand
         {
-            CourseId = courseId,
             Title = request.Title,
             Description = request.Description,
             OrderIndex = request.OrderIndex,
             DurationMinutes = request.DurationMinutes,
             IsPreview = request.IsPreview,
-            VideoUrl = request.VideoUrl
+            VideoUrl = request.VideoUrl,
+            CourseId = request.CourseId
         });
-        return CreatedAtAction(nameof(GetById), new { courseId, id = result.Id }, result);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Instructor,Admin")]
+    // 🚀 مسحنا الـ Roles خالص!
+    [Authorize] 
     [ProducesResponseType(typeof(LectureDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<LectureDto>> Update(Guid courseId, Guid id, [FromBody] UpdateLectureRequestDto request)
+    public async Task<ActionResult<LectureDto>> Update(Guid id, [FromBody] UpdateLectureRequestDto request)
     {
         var result = await _mediator.Send(new UpdateLectureCommand
         {
@@ -78,15 +80,17 @@ public class LecturesController : ControllerBase
             OrderIndex = request.OrderIndex,
             DurationMinutes = request.DurationMinutes,
             IsPreview = request.IsPreview,
-            VideoUrl = request.VideoUrl
+            VideoUrl = request.VideoUrl,
+            CourseId = request.CourseId 
         });
         return Ok(result);
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Instructor,Admin")]
+    // 🚀 مسحنا الـ Roles خالص!
+    [Authorize] 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Delete(Guid courseId, Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         await _mediator.Send(new DeleteLectureCommand { Id = id });
         return NoContent();
